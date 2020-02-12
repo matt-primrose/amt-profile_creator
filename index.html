@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AMT Profile Creator</title>
+    <link rel='stylesheet' type='text/css' href='index.css'>
+  </head>
+  <script src='index.js'></script>
+  <body>
+    <div>
+        <div class='w3-bar w3-black'>
+          <button class='w3-bar-item w3-button' onclick="changeTab('1')">Domain Profiles</button>
+          <button class='w3-bar-item w3-button' onclick="changeTab('2')">AMT Profiles</button>
+        </div>
+        <div id='1' class='tab'>
+            <p><h1>Add Domain Profiles</h1></p>
+            <div><h2>Domain Profile Information</h2></div>
+            <div class='grid-container'>
+              <div class='item1'>Domain Profile Name: </div><div class='item2'><input type='text' name='domainProfileName' value='example_profile'></div>
+              <div class='item1'>Domain Suffix: </div><div class='item2'><input type='text' name='domainSuffix' value='example.com'></div>
+              <div class='item1'>AMT Provisioning Certificate: </div><div class='item2'><input type='file' name='provisioningCert' value='example.pfx'></div>
+              <div class='item1'>AMT Provisioning Certificate Password: </div><div class='item2'><input type='password' id='provisioningCertPassword' value='password'><input id='showCertPass' class="btn" type='button' name='provisioningCertPassword' value='Show'></div>
+            </div>
+            <div style='text-align:right'>
+              <input type='button' id='addDomain' value='Add Domain'><div id='feedback' style='height: 10px; color: green;' class='inactive'></div>
+            </div>
+            <div><h2>Domain(s) To Add</h2></div>
+            <div id='domainList'></div>
+        </div>
+        <div id='2' class='tab' style='display:none'>
+          <p><h1>Add AMT Profiles</h1></p>
+          <div><h2>AMT Profile Information</h2></div>
+          <div class='grid-container'>
+            <div class='item1'>AMT Profile Name: </div><div class='item2'><input type='text' name='amtProfileName' value='example_profile'></div>
+            <div class='item1'>Generate Random Password:</div><div class='item2'><input id='cbGenerateRandomPassword' type='checkbox' checked='true'></div>
+            <div class='item1' name='randomPasswordSettings'>Password Length: </div><div class='item2' name='randomPasswordSettings'><input type='number' id='randomPasswordLength' min='8' max='32' value='8'></div>
+            <div class='item1' name='staticPasswordSettings' style='display: none'>Static AMT Password:</div><div class='item2' name='staticPasswordSettings' style='display: none'><input type="password" id="amtStaticPassword" value="password"><input id='showAMTPass' class="btn" type='button' name='amtStaticPassword' value='Show'></div>
+          </div>
+          <div style='text-align:right'>
+            <input type='button' id='addAMT' value='Add AMT Profile'><div id='feedback' style='height: 10px; color: green;' class='inactive'></div>
+          </div>
+          <div><h2>AMT Profile(s) To Add</h2></div>
+          <div id='profileList'></div>
+        </div>
+    </div>
+  </body>
+  <script>
+    function changeTab(tabName){
+      var tabs = document.getElementsByClassName('tab');
+      for (let i = 0; i < tabs.length; i++){
+        tabs[i].style.display = 'none';
+      }
+      document.getElementById(tabName).style.display = 'block';
+    }
+    document.getElementById('1').addEventListener('click', function(ev){ changeTab('1') });
+    document.getElementById('2').addEventListener('click', function(ev){ changeTab('2') });
+    let domainProfiles = new Array();
+    document.getElementById('showCertPass').addEventListener('click', function(ev){
+      showHidePassword('showCertPass');
+    });
+    document.getElementById('showAMTPass').addEventListener('click', function(ev){
+      showHidePassword('showAMTPass');
+    });
+    document.getElementById('addDomain').addEventListener('click', function(ev){
+      let domain = new Object();
+      domain.profileName = document.getElementsByName('domainProfileName')[0].value;
+      domain.domainSuffix = document.getElementsByName('domainSuffix')[0].value;
+      domain.amtProvisioningCertLocation = document.getElementsByName('provisioningCert')[0].value;
+      domain.amtProvisioningCertPassword = document.getElementsByName('provisioningCertPassword')[0].value;
+      domainProfiles.push(domain);
+      document.getElementById('feedback').innerHTML = 'Domain Added';
+      document.getElementById('feedback').className = 'active';
+      add();
+      clearForm();
+    });
+    document.getElementById('feedback').addEventListener('webkitTransitionEnd', function(ev){
+      if (document.getElementById('feedback').className == 'active'){
+        document.getElementById('feedback').className = 'inactive';
+      } else {
+        document.getElementById('feedback').innerHTML = ' ';
+      }
+
+    });
+    document.getElementById('cbGenerateRandomPassword').addEventListener('change', function(ev){
+      let rpsEl = document.getElementsByName('randomPasswordSettings');
+        let spsEl = document.getElementsByName('staticPasswordSettings');
+      if(ev.target.checked){
+        for(let x = 0; x < rpsEl.length; x++){
+          rpsEl[x].style.display = 'block';
+        }
+        for(let x = 0; x < spsEl.length; x++){
+          spsEl[x].style.display = 'none';
+        }
+      } else {
+        for(let x = 0; x < rpsEl.length; x++){
+          rpsEl[x].style.display = 'none';
+        }
+        for(let x = 0; x < spsEl.length; x++){
+          spsEl[x].style.display = 'block';
+        }
+      }
+    });
+    function clearForm(){
+
+    }
+    function add(){
+
+    }
+    function showHidePassword(elementId){
+      let ele = document.getElementById(elementId);
+      if (ele.value == 'Show'){
+        document.getElementById(ele.name).type = 'text';
+        ele.value = 'Hide';
+      } else {
+        document.getElementById(ele.name).type = 'password';
+        ele.value = 'Show';
+      }
+    }
+  </script>
+</html>
